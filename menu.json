@@ -1,0 +1,11 @@
+{
+  "Campus Bites": [
+    { "id": "cb1", "name": "Jollof Rice & Chicken", "price": 1500 },
+    { "id": "cb2", "name": "Spaghetti & Egg", "price": 1000 },
+    { "id": "cb3", "name": "Fried Rice & Plantain", "price": 1400 }
+  ],
+  "Savoury Kitchen": [
+    { "id": "sk1", "name": "Pounded Yam & Egusi", "price": 1800 },
+    { "id": "sk2", "name": "Eba & Okra Soup", "price": 1300 }
+  ]
+}
