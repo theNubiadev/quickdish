@@ -7,5 +7,18 @@
   "Savoury Kitchen": [
     { "id": "sk1", "name": "Pounded Yam & Egusi", "price": 1800 },
     { "id": "sk2", "name": "Eba & Okra Soup", "price": 1300 }
+  ],
+
+  "Yellow Corner": [
+    {"id": "yc1", "name": "Beans & Plantain", "price": 1200 },
+    { "id": "yc2", "name": "Moi Moi & Rice", "price": 1600 },
+    { "id": "yc3", "name": "Fried Yam & Egg Sauce", "price": 1100 },
+    { "id": "yc4", "name": "Fish", "price": 400 },
+    { "id": "yc5", "name": "Chicken", "price": 800 }
+  ],
+  "Green Corner": [
+    { "id": "gc1", "name": "Vegetable Soup & Fufu", "price": 1700 },
+    { "id": "gc2", "name": "Salad & Grilled Chicken", "price": 2000 },
+    { "id": "gc3", "name": "Salad", "price": 250 }
   ]
 }

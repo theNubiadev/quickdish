@@ -168,9 +168,8 @@ const { addToCart, getCart, clearCart } = require("./cartStore");
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 console.log("Bot is running...");
 
-// ✅ Set your admin Telegram user ID
-
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || ADMIN_CHAT_ID; // Use env variable if set
+// ✅ Set admin Telegram user ID
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || ADMIN_CHAT_ID; // Using env variable if set
 // 🔍 Build menu map (id → item)
 const menuMap = {};
 for (const [restaurant, items] of Object.entries(menu)) {
@@ -193,20 +192,36 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
+// bot.onText(/\/menu/, (msg) => {
+//   const chatId = msg.chat.id;
+
+//   bot.sendMessage(chatId, "📋 What would you like to do?", {
+//     reply_markup: {
+//       keyboard: [
+//         ["🔍 Search Restaurants", "🍽️ Search Meals"],
+//         ["🛒 View Cart", "📜 Order History"]
+//       ],
+//       resize_keyboard: true,
+//       one_time_keyboard: false
+//     }
+//   });
+// });
+
 bot.onText(/\/menu/, (msg) => {
   const chatId = msg.chat.id;
-
-  bot.sendMessage(chatId, "📋 What would you like to do?", {
+  bot.sendMessage(chatId, "📋 Choose an option:", {
     reply_markup: {
-      keyboard: [
-        ["🔍 Search Restaurants", "🍽️ Search Meals"],
-        ["🛒 View Cart", "📜 Order History"]
-      ],
-      resize_keyboard: true,
-      one_time_keyboard: false
+      inline_keyboard: [
+        [{ text: "🔍 Search Restaurants", callback_data: "search_restaurants" }],
+        [{ text: "🍽️ Search Meals", callback_data: "search_meals" }],
+        [{ text: "🛒 View Cart", callback_data: "view_cart" }],
+        [{ text: "📜 Order History", callback_data: "order_history" }]
+      ]
     }
   });
 });
+
+
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
@@ -278,6 +293,45 @@ bot.on("message", (msg) => {
       },
     });
   }
+});
+bot.on('callback_query', (query) => {
+  const chatId = query.message.chat.id;
+  const userId = query.from.id;
+  const data = query.data;
+
+  if (data === "search_restaurants") {
+    const restaurants = Object.keys(menu);
+    bot.sendMessage(chatId, "📍 Available Restaurants:\n" + restaurants.join("\n"));
+  }
+
+  if (data === "search_meals") {
+    const meals = [];
+    for (const items of Object.values(menu)) {
+      meals.push(...items.map(i => `${i.name} - ₦${i.price}`));
+    }
+    bot.sendMessage(chatId, "🍽️ Meals:\n" + meals.join("\n"));
+  }
+
+  if (data === "view_cart") {
+    const cart = getCart(userId);
+    if (!cart.length) {
+      return bot.sendMessage(chatId, "🧺 Your cart is empty.");
+    }
+    let message = "🧾 *Your Cart:*\n";
+    let total = 0;
+    cart.forEach((item, i) => {
+      message += `${i + 1}. ${item.name} - ₦${item.price}\n`;
+      total += item.price;
+    });
+    message += `\n*Total: ₦${total}*`;
+    bot.sendMessage(chatId, message, { parse_mode: 'Markdown' });
+  }
+
+  if (data === "order_history") {
+    bot.sendMessage(chatId, "📜 No order history found.\n(Coming soon!)");
+  }
+
+  bot.answerCallbackQuery(query.id);
 });
 
 // Handle inline button actions
